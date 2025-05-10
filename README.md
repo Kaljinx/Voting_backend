@@ -5,36 +5,34 @@ It provides a RESTful API for user authentication, poll management, voting, and 
 Table of Contents
 Setup
 
-    Install dependencies:
+Install dependencies:
 
-bash
+```
 npm install express sqlite3 bcryptjs jsonwebtoken cors dotenv
+```
 
-Initialize the database:
+Initialize the database using Python:
 
-    Using Python:
-
-bash
+```
 python init_db.py
+```
 
 Or using SQLite CLI:
-
-    bash
-    sqlite3 voting.db < schema.sql
+```
+sqlite3 voting.db < schema.sql
+```
 
 Create a .env file:
-
-text
+```
 JWT_SECRET=your_jwt_secret_here
+```
 
 Start the server:
+```
+node app.js
+```
 
-    bash
-    node app.js
-
-    The backend will run on http://localhost:3000.
-
-Database Schema
+The backend will run on http://localhost:3000.
 
 Tables:
 
@@ -47,6 +45,7 @@ Tables:
     votes: Stores user votes
 
 See schema.sql for details.
+
 Environment Variables
 
     JWT_SECRET: Secret key for JWT token signing (required)
@@ -59,44 +58,46 @@ API Endpoints
 User Authentication
 Register
 
-    POST /api/register
+```
+POST /api/register
+```
+Body:
 
-    Body:
-
-json
+```
 {
   "username": "alice",
   "password": "password123",
   "is_admin": 0
 }
-
+```
 Response:
-
-    json
-    {
-      "token": "<jwt_token>",
-      "user": { "id": 1, "username": "alice", "is_admin": false }
-    }
+```
+{
+    "token": "<jwt_token>",
+    "user": { "id": 1, "username": "alice", "is_admin": false }
+}
+```
 
 Login
 
-    POST /api/login
-
-    Body:
-
-json
+```
+POST /api/login
+```
+Body:
+```
 {
   "username": "alice",
   "password": "password123"
 }
+```
 
 Response:
-
-    json
+```
     {
       "token": "<jwt_token>",
       "user": { "id": 1, "username": "alice", "is_admin": false }
     }
+```
 
 Polls
 Get Running Polls
@@ -122,44 +123,41 @@ Get Running Polls
 
 Create Poll (Admin only)
 
-    POST /api/polls
-
-    Body:
-
-json
+```
+POST /api/polls
+```
+Body:
+```
 {
   "question": "Favorite fruit?",
   "options": ["Apple", "Banana", "Orange"]
 }
-
+```
 Response:
-
-    json
+```
     { "pollId": 2 }
-
+```
 Stop Poll (Admin only)
-
+```
     POST /api/polls/:pollId/stop
-
+```
     Response:
-
-    text
-    Poll stopped
+   `` Poll stopped ``
 
 Voting
 Vote on a Poll
+```
+POST /api/polls/:pollId/vote
+```
+Body:
 
-    POST /api/polls/:pollId/vote
-
-    Body:
-
-json
+```
 { "optionId": 1 }
-
+```
 Response:
-
-    text
-    Vote recorded
+```
+Vote recorded
+```
 
 Statistics (Admin only)
 List All Polls
