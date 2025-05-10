@@ -1,0 +1,49 @@
+import sqlite3
+
+SCHEMA = """
+CREATE TABLE IF NOT EXISTS users (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  username TEXT UNIQUE NOT NULL,
+  password TEXT NOT NULL,
+  is_admin BOOLEAN DEFAULT 0
+);
+
+CREATE TABLE IF NOT EXISTS polls (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  question TEXT NOT NULL,
+  is_active BOOLEAN DEFAULT 1,
+  created_by INTEGER NOT NULL,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY(created_by) REFERENCES users(id)
+);
+
+CREATE TABLE IF NOT EXISTS options (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  poll_id INTEGER NOT NULL,
+  option_text TEXT NOT NULL,
+  vote_count INTEGER DEFAULT 0,
+  FOREIGN KEY(poll_id) REFERENCES polls(id)
+);
+
+CREATE TABLE IF NOT EXISTS votes (
+  user_id INTEGER NOT NULL,
+  poll_id INTEGER NOT NULL,
+  option_id INTEGER NOT NULL,
+  voted_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (user_id, poll_id),
+  FOREIGN KEY(user_id) REFERENCES users(id),
+  FOREIGN KEY(poll_id) REFERENCES polls(id),
+  FOREIGN KEY(option_id) REFERENCES options(id)
+);
+"""
+
+def initialize_db(db_path="voting.db"):
+    conn = sqlite3.connect(db_path)
+    cursor = conn.cursor()
+    cursor.executescript(SCHEMA)
+    conn.commit()
+    conn.close()
+    print(f"Database initialized at {db_path}")
+
+if __name__ == "__main__":
+    initialize_db()
